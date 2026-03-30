@@ -8,16 +8,16 @@ app.use(express.json());
 
 
 //fakee database
-let studrnt = [
+let student = [
     {
-        id:1, name:"adityay",course:"MERN"
+        id:1, name:"guru",course:"MERN"
     },
      {
-        id:2, name:"adii",course:"NODE"
+        id:2, name:"adam",course:"NODE"
     }
 ];
 
-//get all student 
+//get student by id
 app.get('/student/:id',(req,res)=>{
     const student =student.find(s=>s.id==req.paramas.id);
     if(student){
@@ -27,16 +27,52 @@ app.get('/student/:id',(req,res)=>{
         res.status(404).json({message:"student not found"});
     }
 })  
-//get student by id
-app.get('/student/:id',(req,res)=>{
-    const student =student.find(s=>s.id==req.paramas.id);   
-})
+
+app.post('/student',(req,res)=>{
+    const {name,course } = req.body;
+    if(!name || !course){
+        return res.status(400).json({message:"name and course are required"});
+    }   
+    const newStudent={
+        id: student.length + 1,
+        name,
+        course
+    };
+    student.push(newStudent);
+    res.status(201).json(newStudent);   
+    })
+
 
 
 
 //create a new student
 app.post('/student',(req,res)=>{
-    const newStudent = req.body;
+    const {name,course } = req.body;
+    if(!name || !course){
+        return res.status(400).json({message:"name and course are required"});
+    }
+    const newStudent={
+        id: student.length + 1,
+        name,
+        course
+    };
     student.push(newStudent);
-    res.status(201).json(newStudent);
-})
+    res.status(201).json(newStudent);   
+    })
+
+    app.put('/student/:id',(req,res)=>{
+        const student =student.find(s=>s.id==req.paramas.id);
+        if(!student){
+            return res.status(404).json({message:"student not found"});
+        }
+        const {name,course } = req.body;
+        if(name) student.name = name;
+        if(course) student.course = course;
+        res.json(student);
+    }) 
+
+    
+app.listen(PORT,()=>{   
+        console.log('server running on http://localhost/3000');
+
+});
